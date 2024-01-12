@@ -1,0 +1,10 @@
+numpy~=1.24.4
+umsgpack~=0.1.0
+pillow~=10.2.0
+kornia~=0.7.1
+wandb~=0.16.2
+matplotlib~=3.7.4
+opencv-python~=4.9.0.80
+seaborn~=0.13.1
+tensorboardX~=2.6.2.2
+setuptools~=44.0.0
