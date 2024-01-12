@@ -55,7 +55,7 @@ python3 setup.py develop
 ## SkyEye datasets
 ### KITTI-360
 - Download the Kitti-360 dataset from [here](http://www.cvlibs.net/datasets/kitti-360/).
-- Download the Kitti-360 BEV dataset from [here](). (Will be uploaded soon!)
+- Download the Kitti-360 BEV dataset from [here](http://skyeye.cs.uni-freiburg.de/#dataset).
 - In the training and evaluation scripts:
   - Modify the `dataset_root_dir` parameter to point to the location of the original Kitti-360 dataset.
   - Modify the `seam_root_dir` parameter to point to the location of the Kitti-360 PanopticBEV dataset.

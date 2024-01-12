@@ -14,15 +14,13 @@ class BEVKitti360Dataset(data.Dataset):
     _BEV_MSK_DIR = "bev_msk"
     _BEV_PLABEL_DIR = "bev_plabel_dynamic"
     _FV_MSK_DIR = "front_msk_seam"
-    _WEIGHTS_MSK_DIR = "class_weights"
     _BEV_DIR = "bev_ortho"
     _LST_DIR = "split"
-    _PERCENTAGES_MULTIRUN_DIR = "percentages_multirun"
     _PERCENTAGES_DIR = "percentages"
     _BEV_METADATA_FILE = "metadata_ortho.bin"
     _FV_METADATA_FILE = "metadata_front.bin"
 
-    def __init__(self, seam_root_dir, dataset_root_dir, split_name, transform, window=0, bev_percentage=100, run_iter=None):
+    def __init__(self, seam_root_dir, dataset_root_dir, split_name, transform, window=0, bev_percentage=100):
         super(BEVKitti360Dataset, self).__init__()
         self.seam_root_dir = seam_root_dir  # Directory of seamless data
         self.kitti_root_dir = dataset_root_dir  #  Directory of the KITTI360 data
@@ -34,19 +32,14 @@ class BEVKitti360Dataset(data.Dataset):
             self.bev_percentage = bev_percentage
         else:
             self.bev_percentage = int(bev_percentage)
-        self.run_iter = run_iter
 
         # Folders
         self._img_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._IMG_DIR)
         self._bev_msk_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._BEV_MSK_DIR, BEVKitti360Dataset._BEV_DIR)
         self._bev_plabel_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._BEV_PLABEL_DIR, BEVKitti360Dataset._BEV_DIR)
         self._fv_msk_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._FV_MSK_DIR, "front")
-        self._weights_msk_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._WEIGHTS_MSK_DIR)
         self._lst_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._LST_DIR)
-        if self.run_iter is not None:
-            self._percentages_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._LST_DIR, BEVKitti360Dataset._PERCENTAGES_MULTIRUN_DIR)
-        else:
-            self._percentages_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._LST_DIR, BEVKitti360Dataset._PERCENTAGES_DIR)
+        self._percentages_dir = os.path.join(seam_root_dir, BEVKitti360Dataset._LST_DIR, BEVKitti360Dataset._PERCENTAGES_DIR)
 
         # Load meta-data and split
         self._bev_meta, self._bev_images, self._bev_images_all, self._fv_meta, self._fv_images, self._fv_images_all,\
@@ -72,12 +65,8 @@ class BEVKitti360Dataset(data.Dataset):
                 lst_all = [line.strip() for line in lst_all]
 
             # Get all the samples for which the BEV plabels have to be loaded.
-            if self.run_iter is not None:
-                percentage_file = os.path.join(self._percentages_dir, "{}_{}_{}.txt".format(self.split_name, self.bev_percentage, self.run_iter))
-                print("Loading {}_{}% file".format(self.bev_percentage, self.run_iter))
-            else:
-                percentage_file = os.path.join(self._percentages_dir, "{}_{}.txt".format(self.split_name, self.bev_percentage))
-                print("Loading {}% file".format(self.bev_percentage))
+            percentage_file = os.path.join(self._percentages_dir, "{}_{}.txt".format(self.split_name, self.bev_percentage))
+            print("Loading {}% file".format(self.bev_percentage))
             with open(percentage_file, 'r') as fid:
                 lst_percent = fid.readlines()
                 lst_percent = [line.strip() for line in lst_percent]

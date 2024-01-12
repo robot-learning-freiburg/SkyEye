@@ -137,8 +137,7 @@ def make_dataloader(args, config, rank, world_size):
     if args.train_dataset == "Kitti360":
         train_db = BEVKitti360Dataset(seam_root_dir=args.seam_root_dir, dataset_root_dir=args.dataset_root_dir,
                                       split_name=dl_config['train_set'], transform=train_tf,
-                                      window=dl_config.getint('fvsem_window_size'),
-                                      use_offline_plabels=False)
+                                      window=dl_config.getint('fvsem_window_size'))
 
     if not args.debug:
         train_sampler = DistributedARBatchSampler(train_db, dl_config.getint('train_batch_size'), world_size, rank, True)
@@ -283,12 +282,7 @@ def train(model, optimizer, grad_scaler, scheduler, dataloader, meters, **vararg
 
     data_time = time.time()
 
-    # sample_idx = 0
     for it, sample in enumerate(dataloader):
-        # if sample_idx > 20:
-        #     break
-        # sample_idx += 1
-
         sample_cuda = {}
 
         for key in NETWORK_INPUTS_FV:
@@ -405,11 +399,7 @@ def validate(model, dataloader, **varargs):
     wandb_vis_dict = {}
     max_vis_count = 5
 
-    # subset_count = 0
     for it, sample in enumerate(dataloader):
-        # if subset_count > 20:
-        #     break
-        # subset_count += 1
 
         idxs = sample['idx']
         with torch.no_grad():
