@@ -50,14 +50,13 @@ class VoxelGridAlgo:
 
     def ego_gt_warper(self, voxel_grid, ego_pose_src, ego_pose_dst, transform_status):
         """ Warp the voxel grid using the relative pose between the curr and i_th frames"""
-        resolution = self.resolution / self.feat_scale
 
         # Compute the relative transform between the two image frames.
         # This is the transformation to transform the curr frame to the ith frame
         transform_src2dst = self.compute_relative_transformation(ego_pose_src, ego_pose_dst, transform_status, homogeneous=False)
 
         # Warp the voxel grid using the relative transformation
-        transform_src2dst[:, :3, 3] = transform_src2dst[:, :3, 3] / resolution
+        transform_src2dst[:, :3, 3] = transform_src2dst[:, :3, 3] / self.resolution
         voxel_grid_warped = kornia.geometry.transform.warp_affine3d(voxel_grid, transform_src2dst[:, :3], dsize=voxel_grid.shape[2:])
         return voxel_grid_warped
 
